@@ -44,7 +44,7 @@ class AndroidAutoConfigFragment : BaseGosConfigFragment(
             packageId = PackageId.G_SEARCH_APP,
             notInstalledStringRes = R.string.aauto_issue_gsa_not_installed,
             notEnabledStringRes = R.string.aauto_issue_gsa_disabled,
-            permissionChecks = listOf(
+            appChecks = listOf(
                 IssueCheck.App.Permission(
                     Manifest.permission.INTERNET,
                     R.string.aauto_issue_gsa_no_network_perm

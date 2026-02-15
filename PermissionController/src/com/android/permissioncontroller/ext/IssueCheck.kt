@@ -1,14 +1,16 @@
 package com.android.permissioncontroller.ext
 
+import android.content.Context
 import android.content.pm.PackageManager
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.ext.PackageId
+import android.provider.Telephony
 import androidx.annotation.StringRes
 import getAppInfoOrNull
 
 sealed class IssueCheck {
 
-    abstract fun getStringResOfIssues(packageManager: PackageManager): List<Int>
+    abstract fun getStringResOfIssues(context: Context, packageManager: PackageManager): List<Int>
 
     /**
      * Checks [permission] of the [packageName] without any installed or enabled checks.
@@ -19,7 +21,7 @@ sealed class IssueCheck {
         @StringRes private val issueStringRes: Int,
     ) : IssueCheck() {
         private val packageName = fragment.configuringPkgName
-        override fun getStringResOfIssues(packageManager: PackageManager): List<Int> {
+        override fun getStringResOfIssues(context: Context, packageManager: PackageManager): List<Int> {
             return if (
                 packageManager.checkPermission(permission, packageName)
                 != PERMISSION_GRANTED
@@ -36,12 +38,17 @@ sealed class IssueCheck {
         private val packageId: Int,
         @StringRes private val notInstalledStringRes: Int,
         @StringRes private val notEnabledStringRes: Int,
-        private val permissionChecks: List<Permission> = emptyList(),
+        private val appChecks: List<Check> = emptyList(),
     ) : IssueCheck() {
 
-        class Permission(val permission: String, val issueStringRes: Int)
+        sealed interface Check {
+            val issueStringRes: Int
+        }
 
-        override fun getStringResOfIssues(packageManager: PackageManager): List<Int> {
+        class Permission(val permission: String, override val issueStringRes: Int) : Check
+        class SmsRole(override val issueStringRes: Int) : Check
+
+        override fun getStringResOfIssues(context: Context, packageManager: PackageManager): List<Int> {
             val appInfo = packageManager.getAppInfoOrNull(packageName)
 
             var appInstalled = false
@@ -60,12 +67,21 @@ sealed class IssueCheck {
                     add(notEnabledStringRes)
                 }
 
-                for (permCheck in permissionChecks) {
-                    if (
-                        packageManager.checkPermission(permCheck.permission, packageName)
-                        != PERMISSION_GRANTED
-                    ) {
-                        add(permCheck.issueStringRes)
+                for (permCheck in appChecks) {
+                    when (permCheck) {
+                        is Permission -> {
+                            if (
+                                packageManager.checkPermission(permCheck.permission, packageName)
+                                != PERMISSION_GRANTED
+                            ) {
+                                add(permCheck.issueStringRes)
+                            }
+                        }
+                        is SmsRole -> {
+                            if (Telephony.Sms.getDefaultSmsPackage(context) != packageName) {
+                                add(permCheck.issueStringRes)
+                            }
+                        }
                     }
                 }
             }

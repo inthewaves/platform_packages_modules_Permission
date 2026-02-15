@@ -182,13 +182,14 @@ abstract class BaseGosConfigFragment(
 
     /**
      * Updates a preference with issues determined by the given [issueChecks]. If there are issues,
-     * the preference will be visible and dialog will show issues when clicked.
+     * the preference will be visible and dialog will show issues when clicked. If no issues,
+     * preference will not be visible.
      */
     protected fun Preference.updateWithIssues(
-        @StringRes header: Int,
+        @StringRes dialogHeader: Int,
         issueChecks: List<IssueCheck>
     ) {
-        val text = getIssuesText(header, issueChecks)
+        val text = getIssuesText(dialogHeader, issueChecks)
         isVisible = text != null
 
         if (text != null) {

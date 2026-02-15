@@ -77,6 +77,7 @@ The network permission will also be allowed, it’s needed for communication wit
     <string name="google_maps_app">Google Maps</string>
     <string name="speech_services_app">Speech Recognition &amp; Synthesis</string>
     <string name="google_search_app">Google app</string>
+    <string name="google_messages_app">Google Messages</string>
 
     <string name="gmscore_settings">Play services permissions</string>
     <string name="gmscore_settings_summary_disabled">Google Play services is disabled</string>
@@ -92,4 +93,10 @@ Google Play services should also be granted the Phone permission, and Google Mes
 Some carriers require an entitlement check (GSMA TS.43 with EAP-AKA authentication) to activate RCS in Google Messages. This permission allows Google Play services to use your SIM to complete the EAP-AKA challenge-response from the carrier's entitlement server.
 "
 </string>
+    <string name="rcs_potential_issues">Potential issues with RCS activation</string>
+    <string name="rcs_issue_header">These are the minimum requirements for RCS activation:</string>
+    <string name="rcs_issue_gmscore_no_phone_perm">Google Play services needs the Phone permission</string>
+    <string name="rcs_issue_bugle_not_installed">Google Messages needs to be installed from the Play Store</string>
+    <string name="rcs_issue_bugle_disabled">Google Messages needs to be enabled</string>
+    <string name="rcs_issue_bugle_not_sms_app">Google Messages needs set as the default SMS app enabled</string>
 </resources>
