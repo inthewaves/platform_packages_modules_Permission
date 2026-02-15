@@ -5,24 +5,21 @@ import android.app.compat.gms.AndroidAutoPackageFlag
 import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.ApplicationInfo
-import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.content.pm.ServiceInfo
 import android.ext.PackageId
 import android.provider.Settings
 import android.service.notification.NotificationListenerService
-import androidx.appcompat.app.AlertDialog
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceGroup
 import androidx.preference.PreferenceScreen
 import com.android.permissioncontroller.R
-import com.android.permissioncontroller.ext.BaseGosPkgStateConfigFragment
+import com.android.permissioncontroller.ext.BaseGosConfigFragment
 import com.android.permissioncontroller.ext.BaseSettingsActivity
 import com.android.permissioncontroller.ext.IssueCheck
 import com.android.permissioncontroller.ext.addCategory
 import com.android.permissioncontroller.ext.addPref
 import com.android.permissioncontroller.permission.ui.handheld.PermissionsCollapsingToolbarBaseFragment
-import getAppInfoOrNull
 
 class AndroidAutoConfigActivity : BaseSettingsActivity() {
     override fun getNavGraphStart() = R.id.android_auto_config
@@ -32,7 +29,7 @@ class AndroidAutoConfigWrapperFragment : PermissionsCollapsingToolbarBaseFragmen
     override fun createPreferenceFragment(): PreferenceFragmentCompat = AndroidAutoConfigFragment()
 }
 
-class AndroidAutoConfigFragment : BaseGosPkgStateConfigFragment(
+class AndroidAutoConfigFragment : BaseGosConfigFragment(
     configuringPkgName = PackageId.ANDROID_AUTO_NAME,
     titleStringRes = R.string.android_auto
 ) {

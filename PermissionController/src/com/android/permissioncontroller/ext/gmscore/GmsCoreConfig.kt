@@ -6,7 +6,7 @@ import android.ext.PackageId
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceScreen
 import com.android.permissioncontroller.R
-import com.android.permissioncontroller.ext.BaseGosPkgStateConfigFragment
+import com.android.permissioncontroller.ext.BaseGosConfigFragment
 import com.android.permissioncontroller.ext.BaseSettingsActivity
 import com.android.permissioncontroller.ext.addCategory
 import com.android.permissioncontroller.permission.ui.handheld.PermissionsCollapsingToolbarBaseFragment
@@ -19,7 +19,7 @@ class GmsCoreConfigWrapperFragment : PermissionsCollapsingToolbarBaseFragment() 
     override fun createPreferenceFragment(): PreferenceFragmentCompat = GmsCoreConfigFragment()
 }
 
-class GmsCoreConfigFragment : BaseGosPkgStateConfigFragment(
+class GmsCoreConfigFragment : BaseGosConfigFragment(
     configuringPkgName = PackageId.GMS_CORE_NAME,
     titleStringRes = R.string.gmscore_settings
 ) {

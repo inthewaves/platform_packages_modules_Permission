@@ -39,7 +39,7 @@ import getAppInfoOrNull
  *
  * Use [packagePrefs] to add preferences for packages that should be listening for package updates.
  */
-abstract class BaseGosPkgStateConfigFragment(
+abstract class BaseGosConfigFragment(
     val configuringPkgName: String,
     @StringRes val titleStringRes: Int,
 ) : PermissionsFrameFragment() {

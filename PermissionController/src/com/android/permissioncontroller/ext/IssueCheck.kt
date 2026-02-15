@@ -14,7 +14,7 @@ sealed class IssueCheck {
      * Checks [permission] of the [packageName] without any installed or enabled checks.
      */
     class PermissionOnly(
-        fragment: BaseGosPkgStateConfigFragment,
+        fragment: BaseGosConfigFragment,
         private val permission: String,
         @StringRes private val issueStringRes: Int,
     ) : IssueCheck() {
