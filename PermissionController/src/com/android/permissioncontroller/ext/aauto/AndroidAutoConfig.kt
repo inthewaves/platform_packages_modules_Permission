@@ -2,14 +2,12 @@ package com.android.permissioncontroller.ext.aauto
 
 import android.Manifest
 import android.app.compat.gms.AndroidAutoPackageFlag
-import android.app.compat.gms.GmsUtils
 import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.content.pm.ServiceInfo
 import android.ext.PackageId
-import android.net.Uri
 import android.provider.Settings
 import android.service.notification.NotificationListenerService
 import androidx.appcompat.app.AlertDialog
@@ -34,7 +32,7 @@ class AndroidAutoConfigWrapperFragment : PermissionsCollapsingToolbarBaseFragmen
 }
 
 class AndroidAutoConfigFragment : BaseGosPkgStateConfigFragment(
-    packageName = PackageId.ANDROID_AUTO_NAME,
+    configuringPkgName = PackageId.ANDROID_AUTO_NAME,
     titleStringRes = R.string.android_auto
 ) {
     lateinit var aautoSettingsPref: Preference
@@ -44,7 +42,7 @@ class AndroidAutoConfigFragment : BaseGosPkgStateConfigFragment(
     override fun configurePreferenceScreen(screen: PreferenceScreen) {
         aautoSettingsPref = screen.addPref(getText(R.string.aauto_settings)).apply {
             intent = Intent(Intent.ACTION_APPLICATION_PREFERENCES).apply {
-                `package` = packageName
+                `package` = configuringPkgName
             }
         }
 
@@ -72,7 +70,7 @@ class AndroidAutoConfigFragment : BaseGosPkgStateConfigFragment(
 
             addPref(getText(R.string.aauto_app_info_title)).apply {
                 setSummary(R.string.aauto_app_info_summary)
-                intent = createAppInfoIntent(packageName)
+                intent = createAppInfoIntent(configuringPkgName)
             }
 
             addPref(getText(R.string.notif_listener_settings_title)).apply {
@@ -88,22 +86,9 @@ class AndroidAutoConfigFragment : BaseGosPkgStateConfigFragment(
         }
 
         screen.addCategory(R.string.optional_deps_category).apply {
-            addAppPref("com.google.android.apps.maps", getText(R.string.google_maps_app))
-            addAppPref("com.google.android.tts", getText(R.string.speech_services_app))
-            addAppPref(PackageId.G_SEARCH_APP_NAME, getText(R.string.google_search_app))
-        }
-    }
-
-    private fun createAppInfoIntent(pkgName: String): Intent {
-        return Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-            data = Uri.fromParts("package", pkgName, null)
-            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
-        }
-    }
-
-    private fun PreferenceGroup.addAppPref(pkgName: String, title: CharSequence): Preference {
-        return addPref(title).apply {
-            packagePrefs.put(pkgName, this)
+            addAppDependencyPref("com.google.android.apps.maps", R.string.google_maps_app)
+            addAppDependencyPref("com.google.android.tts", R.string.speech_services_app)
+            addAppDependencyPref(PackageId.G_SEARCH_APP_NAME, R.string.google_search_app)
         }
     }
 
@@ -133,27 +118,6 @@ class AndroidAutoConfigFragment : BaseGosPkgStateConfigFragment(
         }
 
         potentialIssues.isVisible = aautoVoiceCommandIssues.isVisible
-
-        packagePrefs.entries.forEach { e ->
-            val pkgName = e.key
-            val pref = e.value
-
-            val appInfo = pkgManager.getAppInfoOrNull(pkgName)
-
-            if (appInfo == null) {
-                if (pkgManager.getAppInfoOrNull(PackageId.PLAY_STORE_NAME)?.ext()?.packageId == PackageId.PLAY_STORE) {
-                    pref.intent = GmsUtils.createAppPlayStoreIntent(pkgName)
-                    pref.setSummary(R.string.app_dep_missing_summary)
-                } else {
-                    pref.intent = null
-                    pref.setSummary(R.string.app_dep_missing_summary_no_play_store)
-                }
-            } else {
-                pref.intent = createAppInfoIntent(pkgName)
-                pref.setSummary(if (appInfo.enabled) R.string.app_dep_installed
-                        else R.string.app_dep_disabled)
-            }
-        }
     }
 
     private fun getVoiceCommandIssuesText(): CharSequence? {

@@ -20,7 +20,7 @@ class GmsCoreConfigWrapperFragment : PermissionsCollapsingToolbarBaseFragment() 
 }
 
 class GmsCoreConfigFragment : BaseGosPkgStateConfigFragment(
-    packageName = PackageId.GMS_CORE_NAME,
+    configuringPkgName = PackageId.GMS_CORE_NAME,
     titleStringRes = R.string.gmscore_settings
 ) {
     override fun configurePreferenceScreen(screen: PreferenceScreen) {
