@@ -207,7 +207,9 @@ abstract class BaseGosConfigFragment(
         @StringRes header: Int,
         issueChecks: List<IssueCheck>
     ): CharSequence? {
-        val list = issueChecks.flatMap { it.getStringResOfIssues(pkgManager) }
+        val list = issueChecks.flatMap {
+            it.getStringResOfIssues(requireContext(), pkgManager)
+        }
         if (list.isEmpty()) {
             return null
         }
