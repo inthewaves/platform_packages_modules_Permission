@@ -30,6 +30,7 @@ class GmsCoreConfigFragment : BaseGosConfigFragment(
     lateinit var rcsPotentialIssues: Preference
 
     private val rcsIssueChecks = listOf(
+        IssueCheck.OwnerUser(R.string.rcs_issue_not_owner_user),
         IssueCheck.PermissionOnly(
             this,
             Manifest.permission.READ_PHONE_STATE,

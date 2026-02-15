@@ -99,4 +99,5 @@ Some carriers require an entitlement check (GSMA TS.43 with EAP-AKA authenticati
     <string name="rcs_issue_bugle_not_installed">Google Messages needs to be installed from the Play Store</string>
     <string name="rcs_issue_bugle_disabled">Google Messages needs to be enabled</string>
     <string name="rcs_issue_bugle_not_sms_app">Google Messages needs set as the default SMS app enabled</string>
+    <string name="rcs_issue_not_owner_user">RCS in Google Messages currently only works in the Owner user</string>
 </resources>

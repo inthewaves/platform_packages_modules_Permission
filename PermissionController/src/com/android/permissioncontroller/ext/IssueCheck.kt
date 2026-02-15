@@ -5,12 +5,26 @@ import android.content.pm.PackageManager
 import android.content.pm.PackageManager.PERMISSION_GRANTED
 import android.ext.PackageId
 import android.provider.Telephony
+import android.os.Process
 import androidx.annotation.StringRes
 import getAppInfoOrNull
 
 sealed class IssueCheck {
 
     abstract fun getStringResOfIssues(context: Context, packageManager: PackageManager): List<Int>
+
+    class OwnerUser(private val issueStringRes: Int) : IssueCheck() {
+        override fun getStringResOfIssues(
+            context: Context,
+            packageManager: PackageManager
+        ): List<Int> {
+            return if (Process.myUserHandle().identifier != 0) {
+                listOf(issueStringRes)
+            } else {
+                emptyList()
+            }
+        }
+    }
 
     /**
      * Checks [permission] of the [packageName] without any installed or enabled checks.
