@@ -34,11 +34,13 @@ import getAppInfoOrNull
  * Use [addPkgFlagPerm] to create a switch preference that will toggle a flag for a package flag in
  * [GosPackageState]. These switch preferences are updated automatically and added to [pkgFlagPrefs]
  *
- * Use [packagePrefs] to preferences for packages that should be listening for
- * package updates.
+ * To display potential issues, create a Preference and then use [updateWithIssues] with a list of
+ * issue checks in the [updateNonPkgStateUi] function on the Preference.
+ *
+ * Use [packagePrefs] to add preferences for packages that should be listening for package updates.
  */
 abstract class BaseGosPkgStateConfigFragment(
-    protected val configuringPkgName: String,
+    val configuringPkgName: String,
     @StringRes val titleStringRes: Int,
 ) : PermissionsFrameFragment() {
     protected val pkgFlagPrefs = mutableMapOf<Int, SwitchPreferenceCompat>()
@@ -179,9 +181,46 @@ abstract class BaseGosPkgStateConfigFragment(
     }
 
     /**
+     * Updates a preference with issues determined by the given [issueChecks]. If there are issues,
+     * the preference will be visible and dialog will show issues when clicked.
+     */
+    protected fun Preference.updateWithIssues(
+        @StringRes header: Int,
+        issueChecks: List<IssueCheck>
+    ) {
+        val text = getIssuesText(header, issueChecks)
+        isVisible = text != null
+
+        if (text != null) {
+            onPreferenceClickListener = Preference.OnPreferenceClickListener { _ ->
+                AlertDialog.Builder(requireContext()).run {
+                    setMessage(text)
+                    show()
+                }
+                true
+            }
+        }
+    }
+
+    private fun getIssuesText(
+        @StringRes header: Int,
+        issueChecks: List<IssueCheck>
+    ): CharSequence? {
+        val list = issueChecks.flatMap { it.getStringResOfIssues(pkgManager) }
+        if (list.isEmpty()) {
+            return null
+        }
+        return getString(header) + "\n\n" +
+                list.joinToString("\n") { "• " + getString(it) }
+    }
+
+    /**
      * Handle updating UI state from sources other than [GosPackageState] preferences and app
      * dependency preferences. Those preferences are already updated by the base class.
      * The [applicationInfo] corresponds to [configuringPkgName].
+     *
+     * Use [updateWithIssues] to update a preference for displaying issues checked by a list of
+     * [IssueCheck]
      */
     abstract fun updateNonPkgStateUi(applicationInfo: ApplicationInfo)
 
